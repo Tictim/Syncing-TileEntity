@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="[32,)"
+license="MIT License"
+
+[[mods]]
+modId="rainbowfountain"
+version="${file.jarVersion}"
+displayName="Rainbow Fountain"
+authors="Tictim"
+description='''
+
+'''
