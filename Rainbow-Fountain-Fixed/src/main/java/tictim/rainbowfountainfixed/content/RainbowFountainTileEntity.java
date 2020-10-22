@@ -1,5 +1,6 @@
 package tictim.rainbowfountainfixed.content;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -25,8 +26,21 @@ public class RainbowFountainTileEntity extends TileEntity implements ITickableTi
 	@Override public void tick(){
 		if(!world.isRemote&&world.getGameTime()%20==0){
 			color = RNG.nextInt(0x1000000);
-			world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), BlockFlags.BLOCK_UPDATE, 0);
+			world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0);
 		}
+	}
+
+	@Override public CompoundNBT getUpdateTag(){
+		CompoundNBT nbt = super.getUpdateTag();
+		nbt.putInt("color", color);
+		return nbt;
+	}
+
+	@Override public void handleUpdateTag(BlockState state, CompoundNBT nbt){
+		super.handleUpdateTag(state, nbt);
+		this.color = nbt.getInt("color");
+		//아래 메소드 콜은 블럭 색상을 재설정하기 위하여 필요합니다.
+		world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), BlockFlags.RERENDER_MAIN_THREAD);
 	}
 
 	@Override public SUpdateTileEntityPacket getUpdatePacket(){
